@@ -19,10 +19,13 @@
             <br/>
             <input type="text" v-model="description" placeholder="Description">
             <br/>
-            <input type="file" name="carcoll" @change="fileChanged">
+            <input type="file" name="photo" @change="fileChanged">
             <button type="submit">Add Your User</button>
 
         </form>
+        <div class="upload" v-if="addItem">
+            <img :src="addItem.path" />
+        </div>
 
         <div class="theCars" v-if="people">
             <p>The Cars</p>
@@ -58,6 +61,7 @@ export default {
             description: '',
             carcoll: '',
             file: null,
+            addItem: null,
             
             cars: [],
             make: '',
@@ -83,14 +87,22 @@ export default {
 
         async addPerson() {
             try {
-
-                await axios.post("/api/peoples", {
+                const formData = new FormData();
+                formData.append('photo', this.file, this.file.name)
+                let r1 = await axios.post('/api/photos', formData)
+                let r2 = await axios.post('/api/peoples', {
+                    Person: this.peopleName,
+                    Description: this.description,
+                    Owns: r1.data.Owns
+                });
+                this.addItem = r2.data;
+                /*await axios.post("/api/peoples", {
                     Person: this.peopleName,
                     Description: this.description,
                     Owns: this.carcoll,
                 });
                 await this.getPerson();
-            } catch (error) {
+            */} catch (error) {
                 console.log(error);
             }
         },

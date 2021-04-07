@@ -1,5 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const multer = require('multer')
+const upload = multer({
+    dest: '../front-end/public/images/',
+    limits: {
+        fileSize:10000000
+    }
+});
+
 const mongoose = require('mongoose');
 
 const app = express();
@@ -30,6 +39,18 @@ const PeopleSchema = new mongoose.Schema({
 
 //Create a model for people
 const People = mongoose.model('People', PeopleSchema);
+
+//Upload Photo
+
+app.post('/api/photos', upload.single('photo'), async (req, res) => {
+    // Safety check
+    if (!req.file) {
+        return res.sendStatus(400);
+    }
+    res.send({
+        Owns: "/images/" + req.file.filename
+    });
+});
 
 //Create a Person
 app.post('/api/peoples', async (req, res) => {
