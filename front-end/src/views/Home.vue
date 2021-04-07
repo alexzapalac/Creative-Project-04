@@ -6,25 +6,39 @@
             <h1>Welcome to your Local Auto Club</h1>
             <p> Add some cool Cars</p>
         </div>
-     
-        <div id="peoples">
-            <h2>Log in:</h2>
-            <p>Select your User</p>
-            <button v-for="people in peoples" :key=people.id @click=selectPerson(people)>{{people.Person}}</button>
+        <div id="bar">
         </div>
 
-        <form @submit.prevent="addPerson">
-            <p>Create a new User</p>
-            <input type="text" v-model="peopleName" placeholder="Your Name">
-            <br/>
-            <input type="text" v-model="description" placeholder="Description">
-            <br/>
-            <input type="file" name="photo" @change="fileChanged">
-            <button type="submit">Add Your User</button>
+        <h2>Log in:</h2>
+        <p>Select your User</p>      
+        <div class="wrapper">
 
-        </form>
+            <div id="peoples" v-for="people in peoples" :key=people.id>
+                <div class="info">
+                    <h3>{{people.Person}}</h3>
+                </div>
+                <div class="image">
+                    <img :src="people.Owns" />
+                </div>
+                <button @click=selectPerson(people)>Start Adding Cars</button>
+                <div class="topage" v-on:click="goToPage(people)">
+                    <router-link to="/item">Visit My Page</router-link>
+                </div>
+            </div>
+
+            <form @submit.prevent="addPerson">
+                <p>Create a new User</p>
+                <input type="text" v-model="peopleName" placeholder="Your Name">
+                <br/>
+                <input type="text" v-model="description" placeholder="Description">
+                <br/>
+                <input type="file" name="photo" @change="fileChanged">
+                <button type="submit">Add Your User</button>
+
+            </form>
+        </div>
         <div class="upload" v-if="addItem">
-            <img :src="addItem.path" />
+        <img :src="addItem.path" />
         </div>
 
         <div class="theCars" v-if="people">
@@ -62,6 +76,7 @@ export default {
             carcoll: '',
             file: null,
             addItem: null,
+            infoToPage: [],
             
             cars: [],
             make: '',
@@ -83,6 +98,10 @@ export default {
     methods: {
         fileChanged(event) {
             this.file = event.target.files[0]
+        },
+
+        goToPage(people) {
+            this.infoToPage.push(people);
         },
 
         async addPerson() {
@@ -151,3 +170,68 @@ export default {
 
 
 </script>
+
+<style scoped>
+
+#app {
+
+}
+#welcome {
+
+    align-content: center;
+    align-items: center;
+    text-align: center;
+}
+#bar {
+    color: black;
+    border-block-color: black;
+    margin-top: 5px;
+    padding-top: 5px;
+    background-color: black;
+    display: flex;
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#peoples {
+    margin: 10px;
+    margin-top: 50px;
+    width: 200px;
+    background-color: burlywood;
+}
+
+#peoples img{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    
+}
+#peoples .image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+.info {
+    
+    color: #000;
+    padding: 10px 30px;
+    height: 80px;
+}
+
+#peoples button {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+}
+
+</style>
