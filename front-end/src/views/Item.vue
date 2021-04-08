@@ -5,15 +5,16 @@
         <router-link to="/">Back to Home</router-link>
 
         <div class="wrapper">
-
+            <div id="editUser">
+                <button>Edit User</button>
+            </div>
             <div class="container">
                 <div class="image">
                     <img :src="person.Owns">
                 </div>
                 <div class="info">
                     <h3>{{person.Person}}</h3>
-                </div>
-                <div class="descrip">
+
                     <h4>{{person.Description}}</h4>
             </div>
 
@@ -36,8 +37,21 @@
                     <p>Year: {{car.year}}</p>
                     <p>Color: {{car.color}}</p>
                 </div>
-                <button>Edit Car</button>
-                <button @click="deleteCar(car)">Remove Car</button>
+                <div class="buttons">
+                    <button @click="setEditTrue()">Edit Car</button>
+                    <div class="editButton" v-if="editItem">
+                        <input type="text" v-model="make" placeholder="Make">
+                        <br/>
+                        <input type="text" v-model="model" placeholder="Model">
+                        <br/>
+                        <input type="text" v-model="color" placeholder="Color">
+                        <br/>
+                        <input type="text" v-model="year" placeholder="Year">
+                        <br/>
+                        <button @click="editCar(car)">Submit Edit</button>
+                    </div>
+                    <button @click="deleteCar(car)">Remove Car</button>
+                </div>
                 
             </div>
         </div>
@@ -54,7 +68,11 @@ export default {
             person: {},
             cars: [],
             car: null,
-            editItem: "",
+            editItem: false,
+            make: '',
+            model: '',
+            year: '',
+            color: '',
         }
     },
     created() {
@@ -65,8 +83,14 @@ export default {
         item() {
             return this.$root.$data.item;
         },
+        setEditTrue() {
+            let editItem = true;
+            return editItem;
+        },        
     },
     methods: {
+
+
         async getPerson() {
             try{
                 let response = await axios.get(`/api/peoples/${this.$route.params.id}`);
@@ -101,6 +125,7 @@ export default {
                     color: this.car.color,
                 });
                 this.getCars();
+
                 return true;
             } catch (error){
                 console.log(error);
@@ -113,6 +138,36 @@ export default {
 
 
 <style scoped>
+
+.wrapper {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.wrapper .button {
+    align-content: flex-end;
+}
+#editUser {
+    justify-content: right;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.image {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.info {
+    text-align: center;
+}
+
 
 .image img {
     width: 50%;

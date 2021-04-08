@@ -4,10 +4,12 @@
     <img src="/logo/index.png">
   </div>
   <router-view />
-  <footer>
-      <p>Author: Alex Zapalac</p>
-      <p><a href="https://github.com/alexzapalac/Creative-Project-04.git">Github Repository</a></p>
-  </footer>
+  <div class="foot">  
+    <footer>
+        <p>Author: Alex Zapalac</p>
+        <p><a href="https://github.com/alexzapalac/Creative-Project-04.git">Github Repository</a></p>
+    </footer>
+  </div>
 </div>
 </template>
 
@@ -25,5 +27,9 @@ body {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+}
+
+.foot {
+  margin-top: 50px;
 }
 </style>
