@@ -170,25 +170,6 @@ app.get('/api/peoples/:peopleID/cars/', async(req,res) => {
     }
 });
 
-app.put('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
-    try {
-        let car = await Car.findOne({_id:req.params.carID, people: req.params.peopleID});
-        if (!car) {
-            res.sendStatus(404);
-            return;
-        }
-        car.make = req.body.make;
-        car.model = req.body.model;
-        car.color = req.body.color;
-        car.year = req.body.year;
-        car.path = req.body.path;
-        await car.save();
-        res.send(car);
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-});
 
 //Delete a car
 
@@ -210,25 +191,34 @@ app.delete('/api/peoples/:peopleID/cars/:carID', async(req,res) => {
 //Edit a vehicles Information
 
 app.put('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
+
+    
     try {
         let car = await Car.findOne({_id: req.params.carID, people: req.params.peopleID});
         if (!car) {
             res.sendStatus(404);
             return;
         }
+
         car.make = req.body.make;
         car.model = req.body.model;
         car.color = req.body.color;
         car.year = req.body.year;
+
         await car.save();
+
         res.send(car);
+
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
     }
 });
 
+//Get one individual person
+
 app.get('/api/peoples/:peopleID', async(req, res) => {
+
     try {
         let person = await People.findOne({_id:req.params.peopleID})
         if (!person) {
@@ -242,6 +232,31 @@ app.get('/api/peoples/:peopleID', async(req, res) => {
         res.sendStatus(500);
     }
 });
+
+
+//Edit Person
+
+app.put('/api/peoples/:peopleID', async (req, res) => {
+    try{
+        let per = await People.findOne({_id: req.params.peopleID})
+        if (!per) {
+        res.sendStatus(404);
+        return;
+        }
+        console.log(req.body.Person);
+        console.log(req.body.Description);
+        per.Person = req.body.Person;
+        per.Description = req.body.Description;
+
+        await per.save();
+
+        res.send(per);
+    }   catch(error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+    
+})
 
 //-----------------------------------------------------------------------
 app.listen(3000, () => console.log('Server listening on port 3000!'));

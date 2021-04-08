@@ -28,8 +28,15 @@ body {
   margin-right: auto;
   text-align: center;
 }
+.logo img {
+  border-width: 2px;
+  border: blue;
+}
 
 .foot {
   margin-top: 50px;
+  text-align: center;
 }
+
+
 </style>

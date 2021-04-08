@@ -12,8 +12,8 @@
         <div id="bar">
         </div>
 
-        <h2>Log in:</h2>
-        <p>Select your User</p>      
+        <h2>Please Log in:</h2>
+        <h4>Select your User</h4>      
         <div class="wrapper">
 
             <div id="peoples" v-for="people in peoples" :key=people._id>
@@ -23,11 +23,16 @@
                 <div class="image">
                     <img :src="people.Owns" />
                 </div>
-                <button @click=selectPerson(people)>Start Adding Cars</button>
-                <div class="topage" v-on:click="goToPage(people)">
-                    <router-link :to="'/item/' + people._id">Visit My Page</router-link>
-                </div>
+                <div class="buttons">
+                    <div class="addCar">
+                        <button @click=selectPerson(people)>Start Adding Cars</button>
+                    </div>
+                    <div class="topage" v-on:click="goToPage(people)">
 
+                        <router-link :to="'/item/' + people._id" tag="button">Visit My Page</router-link>
+
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -47,10 +52,11 @@
             </form>
         </div>        
         
-        
+        <div class="wall">
+        </div>
         <div class="addUser">
             <form @submit.prevent="addPerson">
-                <p>Create a new User</p>
+                <p>Create a New User</p>
                 <input type="text" v-model="peopleName" placeholder="Your Name">
                 <br/>
                 <input type="text" v-model="description" placeholder="Description">
@@ -121,6 +127,9 @@ export default {
                     Owns: r1.data.Owns
                 });
                 this.addItem = r2.data;
+                this.peopleName = '';
+                this.description = '';
+                this.getPerson();
                 /*await axios.post("/api/peoples", {
                     Person: this.peopleName,
                     Description: this.description,
@@ -228,10 +237,12 @@ export default {
     margin-top: 50px;
     width: 200px;
     background-color: rgb(233, 72, 72);
+    justify-content: center;
 }
 
 #peoples img{
     width: 50%;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -245,11 +256,22 @@ export default {
     align-self: center;
 }
 
+#peoples .button {
+    justify-content: center;
+}
+.buttons{
+    padding: 5px;
+
+}
 .info {
     
     color: #000;
-    padding: 10px 30px;
-    height: 80px;
+    height: 70px;
+    text-align: center;
+}
+.addCar {
+    display: flex;
+    justify-content: center;
 }
 
 #peoples button {
@@ -258,6 +280,28 @@ export default {
     justify-content: center;
     align-self: center;
     text-align: center;
+}
+.addUser {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.wall {
+    color: black;
+    border-block-color: black;
+    margin-top: 20px;
+    padding-top: 5px;
+    background-color: black;
+    display: flex;
+
+}
+.topage {
+    display: flex;
+    justify-content: center;
+}
+input {
+    margin: 2px;
+    padding: 3px
 }
 
 </style>
