@@ -243,8 +243,6 @@ app.put('/api/peoples/:peopleID', async (req, res) => {
         res.sendStatus(404);
         return;
         }
-        console.log(req.body.Person);
-        console.log(req.body.Description);
         per.Person = req.body.Person;
         per.Description = req.body.Description;
 
