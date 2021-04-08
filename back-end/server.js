@@ -104,7 +104,7 @@ const Car = mongoose.model('Car', carSchema);
 
 //Upload Car Photo
 
-app.post('/api/photos', upload.single('carPhoto'), async (req, res) => {
+app.post('/api/carphotos', upload.single('carphoto'), async (req, res) => {
     // Safety check
     if (!req.file) {
         return res.sendStatus(400);
@@ -139,6 +139,7 @@ app.post('/api/peoples/:peopleID/cars', async (req, res) => {
     }
 });
 
+//send all cars
 app.get('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
     try {
         let car = await Car.findOne({_id:req.params.carID, people: req.params.peopleID});
@@ -149,6 +150,21 @@ app.get('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
         let cars = await Car.find({people:people});
         res.send(cars);
     }   catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+//Send car info to user page
+app.get('/api/peoples/:peopleID/cars/', async(req,res) => {
+    try {
+        let car = await Car.find({people: req.params.peopleID});
+        if(!car) {
+            res.sendStatus(404);
+            return;
+        }
+        res.send(car);
+    }   catch(error) {
         console.log(error);
         res.sendStatus(500);
     }
@@ -166,6 +182,44 @@ app.put('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
         car.color = req.body.color;
         car.year = req.body.year;
         car.path = req.body.path;
+        await car.save();
+        res.send(car);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+//Delete a car
+
+app.delete('/api/peoples/:peopleID/cars/:carID', async(req,res) => {
+    try {
+        let car = await Car.findOne({_id:req.params.carID, people: req.params.peopleID});
+        if (!car) {
+            res.sendStatus(404);
+            return;
+        }
+        await car.delete();
+        res.sendStatus(200);
+    }   catch(error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+//Edit a vehicles Information
+
+app.put('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
+    try {
+        let car = await Car.findOne({_id: req.params.carID, people: req.params.peopleID});
+        if (!car) {
+            res.sendStatus(404);
+            return;
+        }
+        car.make = req.body.make;
+        car.model = req.body.model;
+        car.color = req.body.color;
+        car.year = req.body.year;
         await car.save();
         res.send(car);
     } catch (error) {

@@ -24,19 +24,20 @@
         <div class="carHeader">
             <h3>My Car Collection</h3>
         </div>
+        
         <div class="wrapcoll">
-
-
             <div class="contcoll" v-for="car in cars" :key=car._id>
-                <p> Add Photo</p>
-                <div class="infocoll">
-                    <p>Make</p>
-                    <p>{{car.make}}</p>
-                    <p>Model</p>
-                    <p>{{car.model}}</p>
-                    <p>Year</p>
-                    <p>Color</p>
+                <div class="carImage">
+                    <img :src="car.path">
                 </div>
+                <div class="infocoll">
+                    <p>Make: {{car.make}}</p>
+                    <p>Model: {{car.model}}</p>
+                    <p>Year: {{car.year}}</p>
+                    <p>Color: {{car.color}}</p>
+                </div>
+                <button>Edit Car</button>
+                <button @click="deleteCar(car)">Remove Car</button>
                 
             </div>
         </div>
@@ -53,10 +54,12 @@ export default {
             person: {},
             cars: [],
             car: null,
+            editItem: "",
         }
     },
     created() {
         this.getPerson();
+        this.getCars();
     },
     computed: {
         item() {
@@ -75,9 +78,31 @@ export default {
         },
         async getCars() {
             try{
-                const response = await axios.get(`/api/peoples/${this.people._id}/cars`);
+                const response = await axios.get(`/api/peoples/${this.$route.params.id}/cars`);
                 this.cars = response.data;
             } catch(error) {
+                console.log(error);
+            }
+        },
+        async deleteCar(car) {
+            try {
+                await axios.delete(`/api/peoples/${this.$route.params.id}/cars/${car._id}`);
+                this.getCars();
+            }   catch (error) {
+                console.log(error);
+            }
+        },
+        async editCar(car) {
+            try {
+                await axios.put(`/api/peoples/${this.$route.params.id}/cars/${car._id}`,{
+                    make: this.car.make,
+                    model: this.car.model,
+                    year: this.car.year,
+                    color: this.car.color,
+                });
+                this.getCars();
+                return true;
+            } catch (error){
                 console.log(error);
             }
         },
@@ -89,6 +114,43 @@ export default {
 
 <style scoped>
 
+.image img {
+    width: 50%;
 
+}
+
+.carImage img {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
+    margin-top: 5px;
+}
+
+.wrapcoll {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.contcoll {
+    margin: 10px;
+    margin-top: 50px;
+    width: 400px;
+    background-color: burlywood;
+}
+
+.carImage {
+    display: flex;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.infocoll {
+
+    text-align: center;
+}
 
 </style>

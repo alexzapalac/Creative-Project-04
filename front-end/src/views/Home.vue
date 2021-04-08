@@ -42,7 +42,7 @@
             <br/>
             <input type="text" v-model="year" placeholder="Year">
             <br/>
-            <input type="file" name="carPhoto" @change="fileChanged">
+            <input type="file" name="carphoto" @change="fileChanged">
             <button type="submit">Add Make Car</button>
             </form>
         </div>        
@@ -60,9 +60,7 @@
 
             </form>
         </div>
-        <div class="upload" v-if="addItem">
-            <img :src="addItem.path" />
-        </div>
+
 
     </div>
 </template>
@@ -143,7 +141,7 @@ export default {
         },
         async selectPerson(people) {
             this.people = people;
-            this.getCars();
+            //this.getCars();
         },
 
         async getCars(){
@@ -157,16 +155,16 @@ export default {
         async addCars(){
             try{
                 const formData1 = new FormData();
-                formData1.append('carPhoto', this.file, this.file.name)
-                let r3 = await axios.post('/api/photos', formData1)
-                let r4 = await axios.post(`/api/peoples/${this.people._id}/cars` , {
+                formData1.append('carphoto', this.file, this.file.name)
+                let r1 = await axios.post('/api/carphotos', formData1)
+                let r2 = await axios.post(`/api/peoples/${this.people._id}/cars` , {
                     make: this.make,
                     model: this.model,
                     color: this.color,
                     year: this.year,
-                    path: r3.data.path,
+                    path: r1.data.path,
                 });
-                this.addItem = r4.data;
+                this.addItem = r2.data;
                 this.make = "";
                 this.model ="";
                 this.year="";
