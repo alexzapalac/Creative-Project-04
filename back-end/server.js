@@ -84,7 +84,7 @@ app.get('/api/peoples', async (req, res) => {
 
 //------------------------------------------------------------------------
 
-//Schema for People
+//Schema for Car
 
 const carSchema = new mongoose.Schema({
     people: {
@@ -99,8 +99,22 @@ const carSchema = new mongoose.Schema({
     path: String,
 })
 
-//Model for people
+//Model for Car
 const Car = mongoose.model('Car', carSchema);
+
+//Upload Car Photo
+
+app.post('/api/photos', upload.single('carPhoto'), async (req, res) => {
+    // Safety check
+    if (!req.file) {
+        return res.sendStatus(400);
+    }
+    res.send({
+        path: "/images/" + req.file.filename
+    });
+});
+
+//Create Car
 
 app.post('/api/peoples/:peopleID/cars', async (req, res) => {
     try {
@@ -155,6 +169,21 @@ app.put('/api/peoples/:peopleID/cars/:carID', async (req, res) => {
         await car.save();
         res.send(car);
     } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+app.get('/api/peoples/:peopleID', async(req, res) => {
+    try {
+        let person = await People.findOne({_id:req.params.peopleID})
+        if (!person) {
+            res.sendStatus(404);
+            return;
+        }
+        let per = await People.findOne({_id: req.params.peopleID});
+        res.send(per);
+    } catch(error) {
         console.log(error);
         res.sendStatus(500);
     }

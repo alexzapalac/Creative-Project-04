@@ -1,18 +1,44 @@
 <template>
     <div>
-        <h1>This is my item page</h1>
+        <h1>This is my user page</h1>
+
+        <router-link to="/">Back to Home</router-link>
 
         <div class="wrapper">
 
-            <div class="container" v-for="person in page" :key="person.id">
+            <div class="container">
                 <div class="image">
-                    <img :src="people.Owns">
+                    <img :src="person.Owns">
                 </div>
                 <div class="info">
-                    <h3>person.person</h3>
+                    <h3>{{person.Person}}</h3>
                 </div>
+                <div class="descrip">
+                    <h4>{{person.Description}}</h4>
             </div>
 
+
+            </div>
+
+        </div>
+        <div class="carHeader">
+            <h3>My Car Collection</h3>
+        </div>
+        <div class="wrapcoll">
+
+
+            <div class="contcoll" v-for="car in cars" :key=car._id>
+                <p> Add Photo</p>
+                <div class="infocoll">
+                    <p>Make</p>
+                    <p>{{car.make}}</p>
+                    <p>Model</p>
+                    <p>{{car.model}}</p>
+                    <p>Year</p>
+                    <p>Color</p>
+                </div>
+                
+            </div>
         </div>
     </div>
 </template>
@@ -23,18 +49,34 @@ export default {
     name: 'Item',
     data() {
         return {
-            items: [],
+            loading: false,
+            person: {},
+            cars: [],
+            car: null,
         }
     },
     created() {
-        this.getItems();
+        this.getPerson();
+    },
+    computed: {
+        item() {
+            return this.$root.$data.item;
+        },
     },
     methods: {
-        async getItems() {
+        async getPerson() {
             try{
-                let response = await axios.get("/api/peoples");
-                this.items = response.data;
+                let response = await axios.get(`/api/peoples/${this.$route.params.id}`);
+                this.person = response.data;
                 return true;
+            } catch(error) {
+                console.log(error);
+            }
+        },
+        async getCars() {
+            try{
+                const response = await axios.get(`/api/peoples/${this.people._id}/cars`);
+                this.cars = response.data;
             } catch(error) {
                 console.log(error);
             }

@@ -2,9 +2,12 @@
     <div id ="app">
 
         <div id="welcome">
-            <p>Insert Photo</p>
             <h1>Welcome to your Local Auto Club</h1>
-            <p> Add some cool Cars</p>
+        </div>
+        <div class="coolCars">
+            <img src="logo/car1.jpg">
+            <img src="/logo/car2.jpg">
+            <img src="/logo/car3.jpg">
         </div>
         <div id="bar">
         </div>
@@ -13,7 +16,7 @@
         <p>Select your User</p>      
         <div class="wrapper">
 
-            <div id="peoples" v-for="people in peoples" :key=people.id>
+            <div id="peoples" v-for="people in peoples" :key=people._id>
                 <div class="info">
                     <h3>{{people.Person}}</h3>
                 </div>
@@ -22,10 +25,30 @@
                 </div>
                 <button @click=selectPerson(people)>Start Adding Cars</button>
                 <div class="topage" v-on:click="goToPage(people)">
-                    <router-link to="/item">Visit My Page</router-link>
+                    <router-link :to="'/item/' + people._id">Visit My Page</router-link>
                 </div>
-            </div>
 
+            </div>
+        </div>
+        
+        <div class="theCars" v-if="people">
+            <p>The Cars</p>
+            <form @submit.prevent="addCars">
+            <input type="text" v-model="make" placeholder="Make">
+            <br/>
+            <input type="text" v-model="model" placeholder="Model">
+            <br/>
+            <input type="text" v-model="color" placeholder="Color">
+            <br/>
+            <input type="text" v-model="year" placeholder="Year">
+            <br/>
+            <input type="file" name="carPhoto" @change="fileChanged">
+            <button type="submit">Add Make Car</button>
+            </form>
+        </div>        
+        
+        
+        <div class="addUser">
             <form @submit.prevent="addPerson">
                 <p>Create a new User</p>
                 <input type="text" v-model="peopleName" placeholder="Your Name">
@@ -38,26 +61,8 @@
             </form>
         </div>
         <div class="upload" v-if="addItem">
-        <img :src="addItem.path" />
+            <img :src="addItem.path" />
         </div>
-
-        <div class="theCars" v-if="people">
-            <p>The Cars</p>
-            <form @submit.prevent="addCars">
-            <input type="text" v-model="make">
-            <br/>
-            <input type="text" v-model="model">
-            <br/>
-            <input type="text" v-model="color">
-            <br/>
-            <input type="text" v-model="year">
-            <br/>
-            <button type="submit">Add Make Car</button>
-            </form>
-        </div>
-
-
-
 
     </div>
 </template>
@@ -93,6 +98,9 @@ export default {
 
     computed: {
 
+        filteredItems() {
+            return this.cars;
+        }
     },
 
     methods: {
@@ -101,7 +109,7 @@ export default {
         },
 
         goToPage(people) {
-            this.infoToPage.push(people);
+            this.$root.$data.item.push(people);
         },
 
         async addPerson() {
@@ -148,7 +156,23 @@ export default {
         },
         async addCars(){
             try{
-                await axios.post(`/api/peoples/${this.people._id}/cars`, {
+                const formData1 = new FormData();
+                formData1.append('carPhoto', this.file, this.file.name)
+                let r3 = await axios.post('/api/photos', formData1)
+                let r4 = await axios.post(`/api/peoples/${this.people._id}/cars` , {
+                    make: this.make,
+                    model: this.model,
+                    color: this.color,
+                    year: this.year,
+                    path: r3.data.path,
+                });
+                this.addItem = r4.data;
+                this.make = "";
+                this.model ="";
+                this.year="";
+                this.path ="";
+                this.getCars();
+                /*await axios.post(`/api/peoples/${this.people._id}/cars`, {
                     make: this.make,
                     model: this.model,
                     color: this.color,
@@ -161,7 +185,7 @@ export default {
                 this.year = "";
                 this. path = "";
                 this.getCars();
-            } catch (error) {
+            */} catch (error) {
                 console.log(error);
             }
         },
@@ -173,14 +197,18 @@ export default {
 
 <style scoped>
 
-#app {
-
-}
 #welcome {
 
     align-content: center;
     align-items: center;
     text-align: center;
+}
+
+.coolCars {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 2px;
 }
 #bar {
     color: black;
@@ -201,7 +229,7 @@ export default {
     margin: 10px;
     margin-top: 50px;
     width: 200px;
-    background-color: burlywood;
+    background-color: rgb(233, 72, 72);
 }
 
 #peoples img{
